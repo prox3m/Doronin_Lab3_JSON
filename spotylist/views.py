@@ -7,7 +7,15 @@ DATA_FILE = Path(settings.BASE_DIR) / 'data' / 'albums.json'
 TIME_RE = re.compile(r'^(\d+:)?\d{1,2}:\d{1,2}:\d{1,2}$')
 
 def index(request):
-    return render(request, 'spotylist/index.html', {'albums': []})
+    albums = read_albums()
+
+    for album in albums:
+        if album.get('image'):
+            album['image_url'] = f'/media/{album["image"]}'
+        else:
+            album['image_url'] = '/static/spotylist/images/undefined.jpeg'
+
+    return render(request, 'spotylist/index.html', {'albums': albums})
 
 def read_albums():
     if not DATA_FILE.exists():

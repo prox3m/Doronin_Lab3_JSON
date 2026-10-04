@@ -100,10 +100,11 @@ input {
 
 .albums-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
     gap: 12px;
     overflow-y: auto;
     padding-right: 6px;
+    align-content: start;
 }
 
 .albums-empty {
@@ -132,7 +133,7 @@ input {
 .album-cover img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 

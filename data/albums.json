@@ -1,10 +1,21 @@
 [
     {
-        "name": "author",
-        "length": "12:30:24",
+        "name": "KF album",
+        "authors": "Rocky Gray",
+        "length": "0:6:44",
         "tracks": [
-            "track1",
-            "track2"
+            "Monstrosity",
+            "Search, destroy, repeat"
+        ]
+    },
+
+    {
+        "name": "Minecraft",
+        "authors": "C418",
+        "length": "0:08:39",
+        "tracks": [
+            "Aria Math",
+            "Subwoofer Lullaby"
         ]
     }
 ]
