@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.conf import settings
 from pathlib import Path
 import json, os, re
@@ -30,13 +31,31 @@ def read_albums():
     except json.JSONDecodeError:
         return []
 
+def create_album(request):
+    if request.method != 'POST':
+        return redirect('index')
 
-def write_albums(albums):
-    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+    album_data = {
+        'name': request.POST.get('name', '').strip(),
+        'image': '',
+        'authors': request.POST.get('authors', '').strip(),
+        'length': request.POST.get('length', '').strip(),
+        'tracks': request.POST.getlist('tracks'),
+    }
 
-    text = json.dumps(albums, ensure_ascii=False, indent=4)
-    DATA_FILE.write_text(text, encoding="utf-8")
+    errors = validate(album_data)
+    if errors:
+        for error in errors:
+            messages.error(request, error)
+        return redirect('index')
+    
+    albums = read_albums()
+    album_data['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+    albums.append(album_data)
+    write_albums(albums)
 
+    messages.success(request, f'Альбом ◄{album_data["name"]}► сохранен!')
+    return redirect('index')
 
 def validate(album):
     not_valid = []
@@ -60,3 +79,9 @@ def validate(album):
         not_valid.append("Треки должны быть списком")
     
     return not_valid
+
+def write_albums(albums):
+    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+    text = json.dumps(albums, ensure_ascii=False, indent=4)
+    DATA_FILE.write_text(text, encoding="utf-8")
