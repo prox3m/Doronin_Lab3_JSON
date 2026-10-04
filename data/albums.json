@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "name": "author",
+        "length": "12:30:24",
+        "tracks": [
+            "track1",
+            "track2"
+        ]
+    }
+]
