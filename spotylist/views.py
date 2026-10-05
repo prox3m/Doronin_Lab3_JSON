@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
 from pathlib import Path
-import json, os, re
+import json, re
 
 DATA_FILE = Path(settings.BASE_DIR) / 'data' / 'albums.json'
 TIME_RE = re.compile(r'^(\d+:)?\d{1,2}:\d{1,2}:\d{1,2}$')
+MEDIA_COVERS = Path(settings.MEDIA_ROOT) / 'covers'
 
 def index(request):
     albums = read_albums()
@@ -51,6 +52,22 @@ def create_album(request):
     
     albums = read_albums()
     album_data['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+
+    image_path = ''
+    if 'image' in request.FILES:
+        file = request.FILES['image']
+        file_name = f'{album_data["index"]}_{file.name}'
+        MEDIA_COVERS.mkdir(parents=True, exist_ok=True)
+        full_path = MEDIA_COVERS / file_name
+
+        with open(full_path, 'wb') as f:
+            for chunk in file.chunks():
+                f.write(chunk)
+        
+        image_path = f'covers/{file_name}'
+    
+    album_data['image'] = image_path
+
     albums.append(album_data)
     write_albums(albums)
 

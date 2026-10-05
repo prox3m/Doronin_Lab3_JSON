@@ -6,9 +6,9 @@
         "tracks": [
             "Monstrosity",
             "Search, destroy, repeat"
-        ]
+        ],
+        "index": 0
     },
-
     {
         "name": "Minecraft",
         "authors": "C418",
@@ -16,6 +16,42 @@
         "tracks": [
             "Aria Math",
             "Subwoofer Lullaby"
-        ]
+        ],
+        "index": 1
+    },
+    {
+        "name": "Album",
+        "authors": "Doronin Dmitriy",
+        "length": "1:02:58",
+        "tracks": [
+            "Track1",
+            "Track2"
+        ],
+        "image": "",
+        "index": 2
+    },
+    {
+        "name": "penis",
+        "image": "covers/3_helmet.jpg",
+        "authors": "asd",
+        "length": "1:30:24",
+        "tracks": [
+            "b",
+            "a",
+            "aqwj",
+            "asdm"
+        ],
+        "index": 3
+    },
+    {
+        "name": "Album",
+        "authors": "Doronin Dmitriy",
+        "length": "1:02:58",
+        "tracks": [
+            "Track1",
+            "Track2"
+        ],
+        "image": "",
+        "index": 4
     }
 ]
