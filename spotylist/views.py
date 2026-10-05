@@ -65,9 +65,8 @@ def validate(album):
         not_valid.append('Название обязательно')
     
     length = album.get('length', '')
-    if length != '':
-        if not TIME_RE.match(length):
-            not_valid.append('Неверный формат времени')
+    if not TIME_RE.match(length.strip()):
+        not_valid.append('Неверный формат времени')
     
     tracks = album.get('tracks', [])
 
@@ -85,3 +84,44 @@ def write_albums(albums):
 
     text = json.dumps(albums, ensure_ascii=False, indent=4)
     DATA_FILE.write_text(text, encoding="utf-8")
+
+def import_album(request):
+    if request.method != 'POST':
+        return redirect('index')
+    
+    file = request.FILES.get('file')
+    if not file:
+        messages.error(request, "Не удалось получить файл")
+        return redirect('index')
+    
+    try:
+        content = file.read().decode('utf-8')
+        data = json.loads(content)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        messages.error(request, 'Файл не является корректным JSON')
+        return redirect('index')
+
+    if not isinstance(data, dict):
+        messages.error(request, 'Данные JSON файла не являются словарем')
+        return redirect('index')
+
+    errors = validate(data)
+    if errors:
+        for error in errors:
+            messages.error(request, error)
+        return redirect('index')
+    
+    data.setdefault('authors', '')
+    data.setdefault('length', '')
+    data.setdefault('image', '')
+    data.setdefault('tracks', [])
+
+    albums = read_albums()
+    
+    data['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+
+    albums.append(data)
+    write_albums(albums)
+
+    messages.success(request, f'Альбом ◄{data["name"]}► импортирован!')
+    return redirect('index')
