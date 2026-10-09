@@ -35,12 +35,14 @@ const saveButton = document.getElementById('save-btn');
 const albumName = document.getElementById('album-name');
 const albumAuthors = document.getElementById('album-authors');
 const ablumLength = document.getElementById('album-length');
+const albumPrice = document.getElementById('album-price');
 
 saveButton.addEventListener('click', function() {
     const formData = new FormData();
     formData.append('name', albumName.value);
     formData.append('authors', albumAuthors.value);
     formData.append('length', ablumLength.value);
+    formData.append('price', albumPrice.value);
 
     const imageFile = fileInput.files[0];
     if (imageFile) {

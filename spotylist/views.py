@@ -41,6 +41,7 @@ def create_album(request):
         'image': '',
         'authors': request.POST.get('authors', '').strip(),
         'length': request.POST.get('length', '').strip(),
+        'price': request.POST.get('price', '').strip(),
         'tracks': request.POST.getlist('tracks'),
     }
 
@@ -80,6 +81,13 @@ def validate(album):
     name = album.get('name', '')
     if name.strip() == '':
         not_valid.append('Название обязательно')
+
+    price = album.get('price', '')
+    if not price.isdigit():
+        try:
+            float(price)
+        except ValueError:
+            not_valid.append('Стоимость не числовая')
     
     length = album.get('length', '')
     if not TIME_RE.match(length.strip()):
@@ -130,6 +138,7 @@ def import_album(request):
     
     data.setdefault('authors', '')
     data.setdefault('length', '')
+    data.setdefault('price', '')
     data.setdefault('image', '')
     data.setdefault('tracks', [])
 
