@@ -126,27 +126,41 @@ def import_album(request):
         messages.error(request, 'Файл не является корректным JSON')
         return redirect('index')
 
-    if not isinstance(data, dict):
-        messages.error(request, 'Данные JSON файла не являются словарем')
+    if not isinstance(data, list):
+        messages.error(request, 'Данные JSON файла не являются списком')
         return redirect('index')
-
-    errors = validate(data)
-    if errors:
-        for error in errors:
-            messages.error(request, error)
-        return redirect('index')
-    
-    data.setdefault('authors', '')
-    data.setdefault('length', '')
-    data.setdefault('price', '')
-    data.setdefault('image', '')
-    data.setdefault('tracks', [])
 
     albums = read_albums()
-    
-    data['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+    albumsTemp = []
 
-    albums.append(data)
+    for albumId in range(data):
+        album = data[albumId]
+        flag = False
+
+        if not isinstance(album, dict):
+            messages.error(request, f'Данные Альбома {albumId} не являются словарем')
+            flag = True
+        
+        if flag:
+            return redirect('index')
+        
+        errors = validate(album)
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return redirect('index')
+        
+        album.setdefault('authors', '')
+        album.setdefault('length', '')
+        album.setdefault('price', '')
+        album.setdefault('image', '')
+        album.setdefault('tracks', [])
+    
+        album['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+
+        albumTemp.append(album)
+    
+    albums.append(album)
     write_albums(albums)
 
     messages.success(request, f'Альбом ◄{data["name"]}► импортирован!')
