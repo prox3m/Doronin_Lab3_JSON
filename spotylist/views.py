@@ -131,37 +131,61 @@ def import_album(request):
         return redirect('index')
 
     albums = read_albums()
-    albumsTemp = []
 
-    for albumId in range(data):
-        album = data[albumId]
-        flag = False
-
-        if not isinstance(album, dict):
-            messages.error(request, f'Данные Альбома {albumId} не являются словарем')
-            flag = True
-        
-        if flag:
-            return redirect('index')
-        
-        errors = validate(album)
+    if isinstance(data, dict):
+        errors = validate(data)
         if errors:
             for error in errors:
-                messages.error(request, error)
+                messages.eror(request, error)
             return redirect('index')
-        
-        album.setdefault('authors', '')
-        album.setdefault('length', '')
-        album.setdefault('price', '')
-        album.setdefault('image', '')
-        album.setdefault('tracks', [])
-    
-        album['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
 
-        albumTemp.append(album)
-    
-    albums.append(album)
-    write_albums(albums)
+        data.setdefault('authors', '')
+        data.setdefault('length', '')
+        data.setdefault('price', '')
+        data.setdefault('image', '')
+        data.setdefault('tracks', [])
+
+        data["index"] = max((a.get('index', -1) for a in albums), default=-1) + 1
+
+        albums.append(data)
+        write_albums(albums)
+        messages.success(request, 'Альбом был успешно импортирован')
+    elif isinstance(data, list):
+        albumsTemp = []
+
+        for albumId in range(data):
+            album = data[albumId]
+            flag = False
+
+            if not isinstance(album, dict):
+                messages.error(request, f'Данные Альбома {albumId} не являются словарем')
+                flag = True
+            
+            if flag:
+                return redirect('index')
+            
+            errors = validate(album)
+            if errors:
+                for error in errors:
+                    messages.error(request, error)
+                return redirect('index')
+            
+            album.setdefault('authors', '')
+            album.setdefault('length', '')
+            album.setdefault('price', '')
+            album.setdefault('image', '')
+            album.setdefault('tracks', [])
+        
+            album['index'] = max((a.get('index', -1) for a in albums), default=-1) + 1
+
+            albumTemp.append(album)
+
+            albums.append(album)
+            write_albums(albums)
+            messages.success(request, 'Альбомы были успешно импортированы')
+    else:
+        messages.error(request, 'Данные файла не являются либо словарем либо списком')
+        return redirect('index')
 
     messages.success(request, f'Альбом ◄{data["name"]}► импортирован!')
     return redirect('index')
