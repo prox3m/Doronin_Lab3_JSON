@@ -7,6 +7,8 @@
             "Monstrosity",
             "Search, destroy, repeat"
         ],
+        "price": "",
+        "image": "",
         "index": 0
     },
     {
@@ -17,6 +19,8 @@
             "Aria Math",
             "Subwoofer Lullaby"
         ],
+        "price": "",
+        "image": "",
         "index": 1
     },
     {
@@ -27,6 +31,7 @@
             "Track1",
             "Track2"
         ],
+        "price": "",
         "image": "",
         "index": 2
     }
